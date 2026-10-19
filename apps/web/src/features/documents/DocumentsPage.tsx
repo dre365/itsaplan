@@ -25,6 +25,7 @@ import DocumentsIndex from './components/DocumentsIndex';
 import { documentBelongsToTab, type DocumentListTab } from './utils/documentList';
 import { documentAncestors } from './utils/documentTree';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { titlePath, useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useDocumentNavigation, useRecentDocuments } from '@/hooks/useDocumentNavigation';
 import { useTranslations } from 'next-intl';
 
@@ -85,6 +86,11 @@ export default function DocumentsPage() {
       : document,
   );
   const documentQuery = useDocumentQuery(projectKey, documentId);
+  const documentTitle =
+    !documentQuery.isError &&
+    documentQuery.data &&
+    (documentQuery.data.title.trim() || t('untitled'));
+  useDocumentTitle(titlePath(project?.project.name, documentTitle));
   const createDocument = useCreateDocument(projectKey);
   const deleteDocument = useDeleteDocument(projectKey);
   const duplicateDocument = useDuplicateDocument(projectKey);
